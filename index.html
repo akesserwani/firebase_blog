@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    
+
+</head>
+
+<body><br>
+   
+    <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-database.js"></script>
+
+
+
+<input id = "comment" type="text" id="myInput"><br><br>
+<button type="button" onclick="comment()">Comment</button><br>
+<div id = "comment_div" style = "height:500px; width: 500px;">
+    <br>
+</div>
+
+
+  
+<script>
+
+var firebaseConfig = {
+      apiKey: "AIzaSyABaMpkkSkVe06hL6RweITS_gNe4d3opgY",
+      authDomain: "personal-blog-5c93f.firebaseapp.com",
+      projectId: "personal-blog-5c93f",
+      storageBucket: "personal-blog-5c93f.appspot.com",
+      messagingSenderId: "858225130377",
+      appId: "1:858225130377:web:2c76b2948b4a477437ff58",
+      measurementId: "G-5YQ4N38HZH"
+    };
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+var database = firebase.database();
+
+
+
+function comment(){
+    x = document.getElementById("comment").value;
+    writeUserData(x);
+
+}
+
+var message_id;
+database.ref("comments/").on("value", function(snapshot) {
+    children = snapshot.numChildren();
+    message_id = children;
+
+})
+
+function writeUserData(words) {
+    database.ref('comments/' + String(message_id)).set({
+        comment: words,
+    });
+
+    //message_id += 1;
+}
+
+function readComments(){
+
+
+    database.ref("comments/").on("value", function(commentsSnapshot) {
+    document.getElementById("comment_div").innerHTML = " ";
+    commentsSnapshot.forEach(function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+            var data = childSnapshot.val();
+
+            //create html elements
+            new_comment = document.createElement("H");
+            new_comment.innerHTML = data;
+            document.getElementById("comment_div").appendChild(new_comment);
+            document.getElementById("comment_div").appendChild(document.createElement('br'));
+        });
+    });
+})
+
+}
+
+readComments();
+
+
+</script>
+
+
+
+</body>
+</html>
